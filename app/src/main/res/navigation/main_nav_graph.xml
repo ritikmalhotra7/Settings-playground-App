@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.settings_playground.ui.fragments.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_OTPServiceFragment"
+            app:destination="@id/OTPServiceFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_timerFragment"
+            app:destination="@id/timerFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_scheduleNotificationFragment"
+            app:destination="@id/scheduleNotificationFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/OTPServiceFragment"
+        android:name="com.example.settings_playground.ui.fragments.OTPServiceFragment"
+        android:label="fragment_o_t_p_service"
+        tools:layout="@layout/fragment_o_t_p_service" />
+    <fragment
+        android:id="@+id/timerFragment"
+        android:name="com.example.settings_playground.ui.fragments.TimerFragment"
+        android:label="fragment_timer"
+        tools:layout="@layout/fragment_timer" />
+    <fragment
+        android:id="@+id/scheduleNotificationFragment"
+        android:name="com.example.settings_playground.ui.fragments.ScheduleNotificationFragment"
+        android:label="ScheduleNotificationFragment" />
+</navigation>
