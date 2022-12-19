@@ -14,4 +14,10 @@
     <string name="schedule_notification">schedule notification</string>
     <string name="message">message</string>
     <string name="title">title</string>
+    <string name="live_data">live data</string>
+    <string name="state_flow">state flow</string>
+    <string name="flow">flow</string>
+    <string name="shared_flow">shared flow</string>
+    <string name="hello_there">hello there</string>
+    <string name="news_flows">news Flows</string>
 </resources>

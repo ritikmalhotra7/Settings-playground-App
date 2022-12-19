@@ -9,7 +9,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.settings_playground.R
 import com.example.settings_playground.databinding.FragmentMainBinding
 import com.example.settings_playground.databinding.FragmentOTPServiceBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
@@ -29,6 +31,7 @@ class MainFragment : Fragment() {
             fragmentMainBtOtpService.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_OTPServiceFragment) }
             fragmentMainBtTimer.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_timerFragment) }
             fragmentMainBtScheduleNotification.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_scheduleNotificationFragment) }
+            fragmentFlowsBtFlow.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_flowsFragment) }
         }
     }
 

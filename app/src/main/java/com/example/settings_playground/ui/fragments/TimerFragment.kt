@@ -13,13 +13,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
+import androidx.datastore.preferences.core.doublePreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.settings_playground.R
 import com.example.settings_playground.databinding.FragmentTimerBinding
 import com.example.settings_playground.utils.*
+import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import java.util.prefs.Preferences
 import kotlin.math.roundToInt
-
+const val USER_PREFERENCES_NAME = "USER_PREFERENCES_NAME"
+const val DATA_STORE_KEY_FOR_TIMER = "DATA_STORE_KEY_FOR_TIMER"
+@AndroidEntryPoint
 class TimerFragment : Fragment() {
 
     private var _binding: FragmentTimerBinding? = null
@@ -27,6 +40,9 @@ class TimerFragment : Fragment() {
     private var timerStarted = false
     private lateinit var serviceIntent: Intent
     private var time = 0.0
+    companion object{
+        private val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES_NAME)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,8 +65,8 @@ class TimerFragment : Fragment() {
     private fun getTimeFromDouble(time: Double): String {
         val resultInt = time.roundToInt()
         val hours = resultInt % 86400 / 3600
-        val minutes = resultInt % 86400 / 60
-        val seconds = resultInt % 86400
+        val minutes = resultInt % 86400 / 60 % 60
+        val seconds = resultInt % 86400 % 60
         return String.format("%02d:%02d:%02d",hours,minutes,seconds)
     }
 
@@ -58,6 +74,12 @@ class TimerFragment : Fragment() {
         binding.apply {
             fragmentTimerBtStart.setOnClickListener { startStopTimer() }
             fragmentTimerBtReset.setOnClickListener { resetTimer() }
+            lifecycleScope.launch {
+                time = readTimer()?.let {
+                    fragmentTimerTvTimer.text = getTimeFromDouble(it)
+                    it
+                } ?: time
+            }
         }
     }
 
@@ -65,6 +87,9 @@ class TimerFragment : Fragment() {
         stopTimer()
         time = 0.0
         binding.fragmentTimerTvTimer.text = getTimeFromDouble(time)
+        lifecycleScope.launch{
+            saveTimer(time)
+        }
     }
 
     private fun startStopTimer() {
@@ -76,6 +101,9 @@ class TimerFragment : Fragment() {
         requireActivity().stopService(serviceIntent)
         binding.fragmentTimerBtStart.text = getString(R.string.start_timer)
         timerStarted = false
+        lifecycleScope.launch{
+            saveTimer(time)
+        }
     }
 
     private fun startTimer() {
@@ -85,4 +113,21 @@ class TimerFragment : Fragment() {
         timerStarted = true
     }
 
+    private suspend fun saveTimer(timerValue:Double){
+        val dataStoreKey = doublePreferencesKey(DATA_STORE_KEY_FOR_TIMER)
+        requireActivity().dataStore.edit { settings ->
+            settings[dataStoreKey] = timerValue
+        }
+    }
+    private suspend fun readTimer():Double?{
+        val dataStoreKey = doublePreferencesKey(DATA_STORE_KEY_FOR_TIMER)
+        val preferences = requireActivity().dataStore.data.first()
+        return preferences[dataStoreKey]
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        requireActivity().unregisterReceiver(updateTime)
+    }
 }

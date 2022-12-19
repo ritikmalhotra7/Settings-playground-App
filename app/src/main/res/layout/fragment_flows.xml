@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/fragment_flows"
+    tools:context=".ui.fragments.FlowsFragment">
+
+    <GridLayout
+        android:id="@+id/fragment_flows_gl"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_100sdp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fragment_flows_bt_live_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/live_data"
+            android:layout_row="0"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_column="0"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fragment_flows_bt_state_flow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/state_flow"
+            android:layout_row="0"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_column="1"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fragment_flows_bt_flow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flow"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_row="1"
+            android:layout_column="0"
+            />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fragment_flows_bt_shared_flow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shared_flow"
+            android:layout_row="1"
+            android:layout_margin="@dimen/_10sdp"
+            android:layout_column="1"
+            />
+    </GridLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/fragment_flows_rv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/_10sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/fragment_flows_gl"
+
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

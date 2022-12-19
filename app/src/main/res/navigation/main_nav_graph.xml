@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_mainFragment_to_scheduleNotificationFragment"
             app:destination="@id/scheduleNotificationFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_flowsFragment"
+            app:destination="@id/flowsFragment" />
     </fragment>
     <fragment
         android:id="@+id/OTPServiceFragment"
@@ -34,4 +37,9 @@
         android:id="@+id/scheduleNotificationFragment"
         android:name="com.example.settings_playground.ui.fragments.ScheduleNotificationFragment"
         android:label="ScheduleNotificationFragment" />
+    <fragment
+        android:id="@+id/flowsFragment"
+        android:name="com.example.settings_playground.ui.fragments.FlowsFragment"
+        android:label="fragment_flows"
+        tools:layout="@layout/fragment_flows" />
 </navigation>

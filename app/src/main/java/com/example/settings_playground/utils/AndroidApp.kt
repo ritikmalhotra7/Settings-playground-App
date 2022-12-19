@@ -6,4 +6,5 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltAndroidApp
 class AndroidApp:Application() {
+
 }
