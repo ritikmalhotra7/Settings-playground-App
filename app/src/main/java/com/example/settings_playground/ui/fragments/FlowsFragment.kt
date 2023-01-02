@@ -33,7 +33,7 @@ class FlowsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentFlowsBinding.inflate(inflater)
         setViews(dataList)
         consumingSharedFlow()
@@ -215,21 +215,21 @@ class FlowsFragment : Fragment() {
         }
     }
 
-    private fun producer() = flow<Int> {
-        val list = listOf<Int>(1, 2, 3, 4, 5, 6, 7, 8)
+    private fun producer() = flow {
+        val list = listOf(1, 2, 3, 4, 5, 6, 7, 8)
         list.forEach {
             //delay in producing
             delay(1000)
             emit(it)
         }
-    }//try/catch only on producer, can commit additinal values
+    }//try/catch only on producer, can commit additional values
         .catch { Log.d("taget", it.toString()) }
 
     private fun producerSharedFlow() : Flow<Int> {
         //here we define replay inside mutableSharedFlow as to restore some of the values
         //if the collector is delayed
         val sharedFlow = MutableSharedFlow<Int>(2)
-        val list = listOf<Int>(1, 2, 3, 4, 5, 6, 7, 8)
+        val list = listOf(1, 2, 3, 4, 5, 6, 7, 8)
         CoroutineScope(Dispatchers.IO).launch {
             list.forEach {
                 //delay in producing
