@@ -226,7 +226,9 @@ class FlowsFragment : Fragment() {
         .catch { Log.d("taget", it.toString()) }
 
     private fun producerSharedFlow() : Flow<Int> {
-        val sharedFlow = MutableSharedFlow<Int>()
+        //here we define replay inside mutableSharedFlow as to restore some of the values
+        //if the collector is delayed
+        val sharedFlow = MutableSharedFlow<Int>(2)
         val list = listOf<Int>(1, 2, 3, 4, 5, 6, 7, 8)
         CoroutineScope(Dispatchers.IO).launch {
             list.forEach {
