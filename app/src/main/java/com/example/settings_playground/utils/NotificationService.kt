@@ -1,6 +1,5 @@
 package com.example.settings_playground.utils
 
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
