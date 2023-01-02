@@ -4,6 +4,14 @@ import kotlinx.coroutines.*
 
 fun main() {
     CoroutineScope(Dispatchers.IO).launch { c.await() }
+    /*CoroutineScope(Dispatchers.Default).launch {
+    for (i in 0..1000) {
+    Log.d("taget","$i - Hello from a different thread! - ${Thread.currentThread().name}")
+    }
+    }
+    CoroutineScope(Dispatchers.IO).launch {
+    Log.d("taget", "Hello from the main thread! - ${Thread.currentThread().name}")
+    }*/
 }
 
 val c = runBlocking {
