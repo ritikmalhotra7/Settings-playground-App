@@ -225,15 +225,15 @@ class FlowsFragment : Fragment() {
     }//try/catch only on producer, can commit additional values
         .catch { Log.d("taget", it.toString()) }
 
-    private fun producerSharedFlow() : Flow<Int> {
+    private fun producerSharedFlow(): SharedFlow<Int> {//or the return value can be SharedFlow()
         //here we define replay inside mutableSharedFlow as to restore some of the values
         //if the collector is delayed
-        val sharedFlow = MutableSharedFlow<Int>(2)
-        val list = listOf(1, 2, 3, 4, 5, 6, 7, 8)
+        val sharedFlow = MutableSharedFlow<Int>()
+        val list = listOf(1, 2, 3)
         CoroutineScope(Dispatchers.IO).launch {
             list.forEach {
                 //delay in producing
-                delay(1000)
+//                delay(1000)
                 sharedFlow.emit(it)
             }
         }
@@ -245,14 +245,41 @@ class FlowsFragment : Fragment() {
         //so it cannot collect first 3 values that have been collected by 1st consumer
         CoroutineScope(Dispatchers.IO).launch {
             producerSharedFlow().collect {
-                Log.d("taget1",it.toString())
+                Log.d("taget1", it.toString())
             }
         }
         CoroutineScope(Dispatchers.IO).launch {
             val r = producerSharedFlow()
-            delay(2500)
-            r.collect {
-                Log.d("taget2",it.toString())
+            delay(1000)
+            r.buffer(1).collect {
+                Log.d("taget2", it.toString())
+            }
+        }
+    }
+
+    private fun producerStateFlow(): StateFlow<Int> {
+        // state flow just stores that state of latest value given to it
+        //here we define default value inside mutableStateFlow as to have some state by default
+        val stateFlow = MutableStateFlow<Int>(10)
+        val list = listOf(1, 2)
+        CoroutineScope(Dispatchers.IO).launch {
+            list.forEach {
+                //delay in producing
+                delay(1000)
+                stateFlow.emit(it)
+            }
+        }
+        return stateFlow
+    }
+
+    private fun consumingStateFlow() {
+        //in this case consumer is collecting late so have only the latest value
+        CoroutineScope(Dispatchers.IO).launch {
+            // returns what it have store at last
+            val result = producerStateFlow()
+            delay(3000)
+            result.buffer(2).collect {
+                Log.d("taget1", it.toString())
             }
         }
     }
