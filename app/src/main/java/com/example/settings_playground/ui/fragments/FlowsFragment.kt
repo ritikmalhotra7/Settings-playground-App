@@ -222,7 +222,7 @@ class FlowsFragment : Fragment() {
             delay(1000)
             emit(it)
         }
-    }//try/catch only on producer, can commit additional values
+    }//catch only on producer, can commit additional values
         .catch { Log.d("taget", it.toString()) }
 
     private fun producerSharedFlow(): SharedFlow<Int> {//or the return value can be SharedFlow()
