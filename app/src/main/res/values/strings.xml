@@ -20,4 +20,6 @@
     <string name="shared_flow">shared flow</string>
     <string name="hello_there">hello there</string>
     <string name="news_flows">news Flows</string>
+    <string name="maps">maps</string>
+    <string name="download_notification">download Notification</string>
 </resources>

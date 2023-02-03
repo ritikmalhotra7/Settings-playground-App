@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.example.settings_playground.databinding.FragmentOTPServiceBinding
-import com.example.settings_playground.utils.OTPBroadcastReceiver
+import com.example.settings_playground.ui.receivers.OTPBroadcastReceiver
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
@@ -111,11 +111,11 @@ class OTPServiceFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                 val message = it.data!!.getStringExtra(SmsRetriever.EXTRA_SMS_MESSAGE)
-                getOTPForMessage(message)
+                getOTPFromMessage(message)
             }
         }
 
-    private fun getOTPForMessage(message: String?) {
+    private fun getOTPFromMessage(message: String?) {
         val otpPattern = Pattern.compile("(|^)\\d{6}")
         val matcher = message?.let { otpPattern.matcher(it) }
         if (matcher!!.find()) {

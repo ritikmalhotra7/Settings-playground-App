@@ -1,9 +1,8 @@
-package com.example.settings_playground.utils
+package com.example.settings_playground.ui.services
 
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.*
 
 class TimerService : Service() {

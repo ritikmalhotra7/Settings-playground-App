@@ -1,4 +1,4 @@
-package com.example.settings_playground.utils
+package com.example.settings_playground.ui.receivers
 
 import android.app.Notification
 import android.app.NotificationManager

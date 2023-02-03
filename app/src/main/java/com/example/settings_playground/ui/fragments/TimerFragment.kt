@@ -1,34 +1,24 @@
 package com.example.settings_playground.ui.fragments
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
-import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.example.settings_playground.R
 import com.example.settings_playground.databinding.FragmentTimerBinding
-import com.example.settings_playground.utils.*
+import com.example.settings_playground.ui.services.TimerService
 import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.prefs.Preferences
 import kotlin.math.roundToInt
 const val USER_PREFERENCES_NAME = "USER_PREFERENCES_NAME"
 const val DATA_STORE_KEY_FOR_TIMER = "DATA_STORE_KEY_FOR_TIMER"
@@ -44,12 +34,15 @@ class TimerFragment : Fragment() {
         private val Context.dataStore by preferencesDataStore(name = USER_PREFERENCES_NAME)
     }
 
+    override fun onStart() {
+        super.onStart()
+        setViews()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTimerBinding.inflate(inflater)
-        setViews()
         serviceIntent = Intent(requireActivity().applicationContext, TimerService::class.java)
         requireActivity().registerReceiver(updateTime, IntentFilter(TimerService.TIMER_UPDATED))
         return binding.root
@@ -75,10 +68,10 @@ class TimerFragment : Fragment() {
             fragmentTimerBtStart.setOnClickListener { startStopTimer() }
             fragmentTimerBtReset.setOnClickListener { resetTimer() }
             lifecycleScope.launch {
-                time = readTimer()?.let {
+                readTimer()?.let {
                     fragmentTimerTvTimer.text = getTimeFromDouble(it)
-                    it
-                } ?: time
+                    time = it
+                }
             }
         }
     }
@@ -97,7 +90,7 @@ class TimerFragment : Fragment() {
         else startTimer()
     }
 
-    private fun stopTimer() {
+    private fun  stopTimer() {
         requireActivity().stopService(serviceIntent)
         binding.fragmentTimerBtStart.text = getString(R.string.start_timer)
         timerStarted = false

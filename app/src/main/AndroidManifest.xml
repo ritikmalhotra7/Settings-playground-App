@@ -31,8 +31,11 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <service android:name=".utils.TimerService"/>
-        <receiver android:name=".utils.NotificationService" android:enabled="true"/>
+        <service android:name=".ui.services.TimerService"/>
+        <service android:name=".ui.fragments.DownloadNotificationService"/>
+        <receiver android:name=".ui.receivers.NotificationService" android:enabled="true"/>
+        <service android:name=".ui.services.ServicePlayground"/>
+        <receiver android:name=".ui.receivers.BroadcastReceiversPlayground" android:enabled="true"/>
     </application>
 
 </manifest>
