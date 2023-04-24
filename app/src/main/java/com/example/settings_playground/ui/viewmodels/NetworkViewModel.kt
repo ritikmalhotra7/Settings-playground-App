@@ -17,6 +17,7 @@ class NetworkViewModel @Inject constructor(private val newsRepo: NewsRepo) : Vie
     private val _liveData: MutableLiveData<Resources<NewsResponse>> = MutableLiveData()
     val liveData get() = _liveData
 
+
     private val _stateFlow:MutableStateFlow<Resources<NewsResponse>> = MutableStateFlow(Resources.Loading())
     val stateFlow get() = _stateFlow.asStateFlow()
 

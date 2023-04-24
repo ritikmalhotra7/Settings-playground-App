@@ -1,12 +1,33 @@
 package com.example.settings_playground.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.settings_playground.databinding.ItemNewsBinding
 
-class NewsAdapter(private val dataList: ArrayList<String>) :
-    RecyclerView.Adapter<NewsAdapter.ViewHolder>() {
+class NewsAdapter : RecyclerView.Adapter<NewsAdapter.ViewHolder>(){
+
+    private val callback = object: DiffUtil.ItemCallback<String>() {
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun getChangePayload(oldItem: String, newItem: String): Any? {
+            return super.getChangePayload(oldItem, newItem)
+        }
+    }
+    val differ = AsyncListDiffer(this,callback)
+
+    fun setList(list:ArrayList<String>){
+        differ.submitList(list)
+    }
 
     class ViewHolder(private val binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
         fun setData(data: String, position: Int) {
@@ -21,8 +42,10 @@ class NewsAdapter(private val dataList: ArrayList<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(dataList[position],position)
+        val item = differ.currentList[position]
+        holder.setData(item,position)
     }
 
-    override fun getItemCount(): Int = dataList.size
+    override fun getItemCount(): Int = differ.currentList.size
+
 }

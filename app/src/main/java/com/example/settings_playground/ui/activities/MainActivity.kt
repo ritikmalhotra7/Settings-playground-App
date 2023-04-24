@@ -14,8 +14,5 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        for(i in 0..1000){
-            val s = GlobalScope.async { i }
-        }
     }
 }

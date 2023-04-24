@@ -15,10 +15,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.work.*
 import coil.load
 import com.example.settings_playground.R
 import com.example.settings_playground.databinding.FragmentMainBinding
-import com.google.gson.Gson
+import com.example.settings_playground.workers.NotificationWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,10 +29,11 @@ import java.io.*
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.UUID
+import java.util.*
 
 const val ACTION_DOWNLOAD = "ACTION_DOWNLOAD"
 const val SEND_BITMAP = "SEND_BITMAP"
+
 @AndroidEntryPoint
 class MainFragment : Fragment() {
 
@@ -54,17 +56,27 @@ class MainFragment : Fragment() {
             fragmentMainBtTimer.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_timerFragment) }
             fragmentMainBtScheduleNotification.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_scheduleNotificationFragment) }
             fragmentMainBtFlow.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_flowsFragment) }
-            val intent = Intent(requireActivity(),DownloadNotificationService::class.java).apply {
+            val intent = Intent(requireActivity(), DownloadNotificationService::class.java).apply {
                 action = ACTION_DOWNLOAD
             }
             fragmentMainBtDownloadNotification.setOnClickListener {
-                requireActivity().startService(intent) }
+                requireActivity().startService(intent)
+            }
+            fragmentMainTbWork.setOnClickListener {
+                val constraints = Constraints.Builder().apply {
+                    setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                    setRequiresCharging(true)
+                }.build()
+                val workRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java).build()
+                WorkManager.getInstance(requireContext()).enqueue(workRequest)
+            }
         }
         requireActivity().registerReceiver(br, IntentFilter(SEND_BITMAP))
     }
-    val br :BroadcastReceiver = object:BroadcastReceiver(){
+
+    val br: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
-            p1!!.getParcelableExtra<Bitmap>("bitmap")?.let{
+            p1!!.getParcelableExtra<Bitmap>("bitmap")?.let {
                 binding.fragmentMainIv.load(it)
             }
         }
@@ -72,7 +84,12 @@ class MainFragment : Fragment() {
 
     override fun onDestroyView() {
         requireActivity().unregisterReceiver(br)
-        requireActivity().stopService(Intent(requireActivity(),DownloadNotificationService::class.java))
+        requireActivity().stopService(
+            Intent(
+                requireActivity(),
+                DownloadNotificationService::class.java
+            )
+        )
         super.onDestroyView()
     }
 }
@@ -80,13 +97,14 @@ class MainFragment : Fragment() {
 class DownloadNotificationService() : Service() {
     override fun onBind(p0: Intent?) = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val webPath = "https://media.geeksforgeeks.org/wp-content/uploads/20210224040124/JSBinCollaborativeJavaScriptDebugging6-300x160.png"
+        val webPath =
+            "https://media.geeksforgeeks.org/wp-content/uploads/20210224040124/JSBinCollaborativeJavaScriptDebugging6-300x160.png"
 
-        when(intent?.action){
-            ACTION_DOWNLOAD->{
+        when (intent?.action) {
+            ACTION_DOWNLOAD -> {
                 CoroutineScope(Dispatchers.IO).launch {
                     val image = mLoad(webPath)
-                    image?.let{
+                    image?.let {
                         mSaveMediaToStorage(it)
                     }
                 }
@@ -111,6 +129,7 @@ class DownloadNotificationService() : Service() {
         }
         return null
     }
+
     // Function to convert string to URL
     private fun mStringToURL(string: String): URL? {
         try {
@@ -122,7 +141,7 @@ class DownloadNotificationService() : Service() {
     }
 
     private suspend fun mSaveMediaToStorage(bitmap: Bitmap?) {
-        val filename = UUID.randomUUID().toString()+".jpg"
+        val filename = UUID.randomUUID().toString() + ".jpg"
         var fos: OutputStream? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             this.contentResolver?.also { resolver ->
@@ -139,12 +158,18 @@ class DownloadNotificationService() : Service() {
             val imagesDir =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
             val image = File(imagesDir, filename)
-            fos = FileOutputStream(image)
+            fos = withContext(Dispatchers.IO) {
+                FileOutputStream(image)
+            }
         }
         fos?.use {
             bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, it)
-            withContext(Dispatchers.Main){
-                Toast.makeText(this@DownloadNotificationService, "Saved to Gallery", Toast.LENGTH_SHORT).show()
+            withContext(Dispatchers.Main) {
+                Toast.makeText(
+                    this@DownloadNotificationService,
+                    "Saved to Gallery",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             sendBroadcast(Intent(SEND_BITMAP).apply {
                 putExtra("bitmap", bitmap)

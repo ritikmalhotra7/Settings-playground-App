@@ -30,7 +30,7 @@ android {
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_11
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -69,6 +69,8 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1'
 
     implementation "io.coil-kt:coil:1.0.0"
+    //Work manager
+    implementation "androidx.work:work-runtime-ktx:2.7.0"
 
 }
 

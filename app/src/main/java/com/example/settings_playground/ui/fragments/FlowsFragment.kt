@@ -17,7 +17,9 @@ import com.example.settings_playground.ui.viewmodels.NetworkViewModel
 import com.example.settings_playground.utils.Resources
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
+import okio.Buffer
 import kotlin.system.measureTimeMillis
 
 @AndroidEntryPoint
@@ -46,7 +48,7 @@ class FlowsFragment : Fragment() {
          * Live Data -> It is a observer for data collected/ handle configuration changes have states to handle.
          * State Flow -> It have same functionality as live data, it also have states to handle but it will emit whenever there is a configuration change eg: having a toast on screen and...
          * ...whenever your configuration is changed then the observer will send this as a new data and repeat itself, it also need coroutine to launch.
-         * Flow: It doesn't have support for state as a result it didn't survive configuration changes we use flow whenever we have a process to do it will do its job and...
+         * Flow -> It doesn't have support for state as a result it didn't survive configuration changes we use flow whenever we have a process to do it will do its job and...
          * ...after configuration change the job is resetted.
          * Shared Flow -> It is most similar to live data, serves same function as live data, it will not emit if there is a configuration change so one time job but survive configuration changes
          */
@@ -65,7 +67,9 @@ class FlowsFragment : Fragment() {
                     1
                 )
             }
-            rvAdapter = NewsAdapter(dataList = dataList)
+            rvAdapter = NewsAdapter().apply {
+                setList(dataList)
+            }
             setupRecyclerView()
         }
         observeLiveData()
@@ -228,7 +232,7 @@ class FlowsFragment : Fragment() {
     private fun producerSharedFlow(): SharedFlow<Int> {//or the return value can be SharedFlow()
         //here we define replay inside mutableSharedFlow as to restore some of the values
         //if the collector is delayed
-        val sharedFlow = MutableSharedFlow<Int>()
+        val sharedFlow = MutableSharedFlow<Int>(/*1*/)
         val list = listOf(1, 2, 3)
         CoroutineScope(Dispatchers.IO).launch {
             list.forEach {
@@ -250,8 +254,7 @@ class FlowsFragment : Fragment() {
         }
         CoroutineScope(Dispatchers.IO).launch {
             val r = producerSharedFlow()
-            delay(1000)
-            r.buffer(1).collect {
+            r.buffer().collect {
                 Log.d("taget2", it.toString())
             }
         }

@@ -108,7 +108,8 @@ class TimerFragment : Fragment() {
 
     private suspend fun saveTimer(timerValue:Double){
         val dataStoreKey = doublePreferencesKey(DATA_STORE_KEY_FOR_TIMER)
-        requireActivity().dataStore.edit { settings ->
+        requireActivity().dataStore.edit {
+                settings ->
             settings[dataStoreKey] = timerValue
         }
     }
