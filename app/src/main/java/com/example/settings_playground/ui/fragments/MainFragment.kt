@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,8 @@ import androidx.work.*
 import coil.load
 import com.example.settings_playground.R
 import com.example.settings_playground.databinding.FragmentMainBinding
-import com.example.settings_playground.workers.NotificationWorker
+import com.example.settings_playground.ui.activities.SecondActivity
+import com.example.settings_playground.ui.workers.NotificationWorker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,6 +47,7 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("taget","onCreate")
         _binding = FragmentMainBinding.inflate(inflater)
         setClickListeners()
         return binding.root
@@ -70,6 +73,13 @@ class MainFragment : Fragment() {
                 val workRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java).build()
                 WorkManager.getInstance(requireContext()).enqueue(workRequest)
             }
+            fragmentMainBtContentProvider.setOnClickListener { findNavController().navigate(R.id.action_mainFragment_to_contentProviderFragment) }
+            fragmentMainBtGoToSecondActivty.setOnClickListener {
+                activity?.startActivity(Intent(context,SecondActivity::class.java))
+            }
+            fragmentMainBtConfiguration.setOnClickListener {
+                findNavController().navigate(R.id.action_mainFragment_to_MVVMConfigurationChangesFragment)
+            }
         }
         requireActivity().registerReceiver(br, IntentFilter(SEND_BITMAP))
     }
@@ -83,6 +93,7 @@ class MainFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        Log.d("taget","onDestroyView")
         requireActivity().unregisterReceiver(br)
         requireActivity().stopService(
             Intent(
@@ -91,6 +102,46 @@ class MainFragment : Fragment() {
             )
         )
         super.onDestroyView()
+    }
+
+    override fun onAttach(context: Context) {
+        Log.d("taget","onAttach")
+        super.onAttach(context)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("taget","onViewCreated")
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onStart() {
+        Log.d("taget","onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("taget","onResume")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d("taget","onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("taget","onStop")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.d("taget","onDestroy")
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d("taget","onDetach")
+        super.onDetach()
     }
 }
 
@@ -176,4 +227,5 @@ class DownloadNotificationService() : Service() {
             })
         }
     }
+
 }

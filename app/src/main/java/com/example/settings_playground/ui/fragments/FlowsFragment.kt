@@ -1,6 +1,8 @@
 package com.example.settings_playground.ui.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.location.GnssAntennaInfo.Listener
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +22,8 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import okio.Buffer
+import java.text.DateFormat
+import java.util.Date
 import kotlin.system.measureTimeMillis
 
 @AndroidEntryPoint
@@ -57,14 +61,14 @@ class FlowsFragment : Fragment() {
             fragmentFlowsBtStateFlow.setOnClickListener {
                 viewModel.topHeadLinesToStateFlow(
                     "US",
-                    1
+                    2
                 )
             }
             fragmentFlowsBtFlow.setOnClickListener { observeFlow() }
             fragmentFlowsBtSharedFlow.setOnClickListener {
                 viewModel.topHeadLinesToSharedFlow(
                     "US",
-                    1
+                    2
                 )
             }
             rvAdapter = NewsAdapter().apply {
@@ -117,7 +121,7 @@ class FlowsFragment : Fragment() {
                         }
                         Toast.makeText(requireContext(), "from stateFlow", Toast.LENGTH_SHORT)
                             .show()
-                        Log.d("taget", "stateFlow")
+                        Log.d("taget2", "stateFlow")
                         setupRecyclerView()
                     }
                     is Resources.Error -> {}
@@ -189,17 +193,17 @@ class FlowsFragment : Fragment() {
                     //under are the terminal operators which do not return flow
                     .onStart {
 //                emit(-1)
-//                    Log.d("taget", "started")
+//                    Log.d("taget2", "started")
                     }.onCompletion {
-//                    Log.d("taget", "completed")
+//                    Log.d("taget2", "completed")
                     }.onEach {
-//                    Log.d("taget", "onEach-$it")
+//                    Log.d("taget2", "onEach-$it")
                     }.collect {
                         //see logcat for results eg: we have 8 users but only see 2 (reference to next block)
-//                    Log.d("taget", "$it - ${Thread.currentThread().name}")
+//                    Log.d("taget2", "$it - ${Thread.currentThread().name}")
                     }
             } catch (e: java.lang.Exception) {
-                Log.d("taget", e.toString())
+                Log.d("taget2", e.toString())
             }
             //buffer is to store emitted items
             val time = measureTimeMillis {
@@ -207,10 +211,10 @@ class FlowsFragment : Fragment() {
                     .collect {
                         //to have delay in consuming
                         delay(2000)
-                        Log.d("taget", it.toString())
+                        Log.d("taget2", it.toString())
                     }
             }
-            Log.d("taget", time.toString())
+            Log.d("taget2", time.toString())
         }
         //to cancel a flow just have to stop consumer
         CoroutineScope(Dispatchers.IO).launch {
@@ -227,7 +231,7 @@ class FlowsFragment : Fragment() {
             emit(it)
         }
     }//catch only on producer, can commit additional values
-        .catch { Log.d("taget", it.toString()) }
+        .catch { Log.d("taget2", it.toString()) }
 
     private fun producerSharedFlow(): SharedFlow<Int> {//or the return value can be SharedFlow()
         //here we define replay inside mutableSharedFlow as to restore some of the values
@@ -249,13 +253,13 @@ class FlowsFragment : Fragment() {
         //so it cannot collect first 3 values that have been collected by 1st consumer
         CoroutineScope(Dispatchers.IO).launch {
             producerSharedFlow().collect {
-                Log.d("taget1", it.toString())
+                Log.d("taget21", it.toString())
             }
         }
         CoroutineScope(Dispatchers.IO).launch {
             val r = producerSharedFlow()
             r.buffer().collect {
-                Log.d("taget2", it.toString())
+                Log.d("taget22", it.toString())
             }
         }
     }
@@ -282,8 +286,53 @@ class FlowsFragment : Fragment() {
             val result = producerStateFlow()
             delay(3000)
             result.buffer(2).collect {
-                Log.d("taget1", it.toString())
+                Log.d("taget21", it.toString())
             }
         }
     }
+    override fun onAttach(context: Context) {
+        Log.d("taget2","onAttach")
+        super.onAttach(context)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("taget2","onViewCreated")
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onStart() {
+        Log.d("taget2","onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("taget2","onResume")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d("taget2","onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("taget2","onStop")
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        Log.d("taget2","onDestroy")
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d("taget2","onDetach")
+        super.onDetach()
+    }
+
+    override fun onDestroyView() {
+        Log.d("taget2","onDestroyView")
+        super.onDestroyView()
+    }
+
 }

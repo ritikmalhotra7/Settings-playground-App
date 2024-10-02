@@ -23,4 +23,7 @@
     <string name="maps">maps</string>
     <string name="download_notification">download Notification</string>
     <string name="title_activity_jet_pack">JetPAckActivity</string>
+    <string name="content_provider">Content Provider\n</string>
+    <string name="gotosecond">go to second act.\n</string>
+    <string name="configuration">Configuration</string>
 </resources>

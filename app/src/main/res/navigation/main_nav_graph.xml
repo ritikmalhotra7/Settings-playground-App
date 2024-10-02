@@ -22,6 +22,12 @@
         <action
             android:id="@+id/action_mainFragment_to_flowsFragment"
             app:destination="@id/flowsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_contentProviderFragment"
+            app:destination="@id/contentProviderFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_MVVMConfigurationChangesFragment"
+            app:destination="@id/MVVMConfigurationChangesFragment" />
     </fragment>
     <fragment
         android:id="@+id/OTPServiceFragment"
@@ -42,4 +48,14 @@
         android:name="com.example.settings_playground.ui.fragments.FlowsFragment"
         android:label="fragment_flows"
         tools:layout="@layout/fragment_flows" />
+    <fragment
+        android:id="@+id/contentProviderFragment"
+        android:name="com.example.settings_playground.ui.fragments.ContentProviderFragment"
+        android:label="fragment_content_provider"
+        tools:layout="@layout/fragment_content_provider" />
+    <fragment
+        android:id="@+id/MVVMConfigurationChangesFragment"
+        android:name="com.example.settings_playground.ui.fragments.MVVMConfigurationChangesFragment"
+        android:label="fragment_m_v_v_m_configuration_changes"
+        tools:layout="@layout/fragment_m_v_v_m_configuration_changes" />
 </navigation>

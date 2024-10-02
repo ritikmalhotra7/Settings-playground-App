@@ -11,7 +11,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:text="@string/hello_there"
         android:textStyle="italic"
-        android:textSize="@dimen/_16sdp"
+        android:textSize="@dimen/_12sdp"
         android:layout_margin="@dimen/_10sdp"
         app:layout_constraintTop_toTopOf="parent"/>
 

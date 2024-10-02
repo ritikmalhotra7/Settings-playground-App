@@ -1,4 +1,4 @@
-package com.example.settings_playground.workers
+package com.example.settings_playground.ui.workers
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
